@@ -110,6 +110,7 @@ if selected_species not in ["Vyber", "Vše"]:
     fig_species_yearly = px.bar(yearly_species_counts, x="Rok", y="Počet pozorování", title=f"Počet pozorování druhu {selected_species} podle roku", color_discrete_sequence=["purple"])
     fig_species_yearly.update_yaxes(dtick=max(1, yearly_species_counts["Počet pozorování"].max() // 5))
     if st.checkbox("Zobrazit graf počtu pozorování vybraného druhu v jednotlivých letech", value=True):
+        st.plotly_chart(fig_species_yearly)
     st.plotly_chart(fig_species_yearly)
 
 st.write("### 10 nejčastěji pozorovaných druhů")
@@ -153,10 +154,12 @@ if not filtered_data.empty:
     fig1 = px.bar(monthly_counts, x="Měsíc", y="Počet pozorování", title="Počet pozorování podle měsíců", color_discrete_sequence=["blue"])
     fig1.update_yaxes(dtick=max(1, monthly_counts["Počet pozorování"].max() // 5))
     if st.checkbox("Zobrazit graf počtu pozorování podle měsíců", value=True):
+        st.plotly_chart(fig1)
     st.plotly_chart(fig1)
     fig2 = px.bar(monthly_counts, x="Měsíc", y="Počet jedinců", title="Počet jedinců podle měsíců", color_discrete_sequence=["red"])
     fig2.update_yaxes(dtick=max(1, monthly_counts["Počet jedinců"].max() // 5))
     if st.checkbox("Zobrazit graf počtu jedinců podle měsíců", value=True):
+        st.plotly_chart(fig2)
     st.plotly_chart(fig2)
 
 # Zobrazení filtrované tabulky

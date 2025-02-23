@@ -4,9 +4,15 @@ import plotly.express as px
 import folium
 from streamlit_folium import folium_static
 from datetime import datetime
+import os
 
-# Cesta k souboru
-file_path = "D:/Birding/avif/pozorovani.csv"
+file_path = "pozorovani.csv"
+
+if not os.path.exists(file_path):
+    st.error("Soubor s daty nebyl nalezen. Nahrajte soubor CSV.")
+    uploaded_file = st.file_uploader("Nahrajte soubor CSV", type="csv")
+    if uploaded_file is not None:
+        file_path = uploaded_file
 
 # Načtení dat
 @st.cache_data

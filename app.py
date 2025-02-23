@@ -60,6 +60,8 @@ if uploaded_file is not None or os.path.exists("pozorovani.csv"):
 species_column = "SpeciesName"  # Název sloupce s druhy ptáků
 species_list = ["Vyber", "Vše"]
 if df is not None and not df.empty and species_column in df.columns:
+    species_list += sorted(df[species_column].dropna().unique())
+if df is not None and not df.empty and species_column in df.columns:
     species_list = ["Vyber", "Vše"] + sorted(df[species_column].dropna().unique())
 if df is not None and not df.empty and species_column in df.columns:
     species_list.extend(sorted(df[species_column].dropna().unique()))

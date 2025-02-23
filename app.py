@@ -61,7 +61,7 @@ date_min = df["Datum"].min().date() if df is not None and not df.empty else date
 date_max = df["Datum"].max().date() if df is not None and not df.empty else datetime.today().date()
 
 # Výběr roku nebo konkrétního rozsahu datumů
-years = sorted(df["Datum"].dropna().dt.year.unique())
+years = sorted(df["Datum"].dropna().dt.year.unique()) if df is not None and not df.empty else []
 selected_year = st.selectbox("Vyberte rok:", ["Vlastní rozsah"] + years)
 
 if selected_year == "Vlastní rozsah":

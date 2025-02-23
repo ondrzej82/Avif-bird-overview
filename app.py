@@ -62,8 +62,6 @@ species_list = ["Vyber", "Vše"]
 if df is not None and not df.empty and species_column in df.columns:
     species_list.extend(sorted(df[species_column].dropna().unique()))
 if df is not None and not df.empty and species_column in df.columns:
-    
-if df is not None and not df.empty and species_column in df.columns:
     species_list.extend(sorted(df[species_column].dropna().unique()))
 selected_species = st.selectbox("Vyber druh ptáka:", species_list)
 

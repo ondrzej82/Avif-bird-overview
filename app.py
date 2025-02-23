@@ -4,15 +4,19 @@ import plotly.express as px
 import folium
 from streamlit_folium import folium_static
 from datetime import datetime
+
+# Cesta k souboru
 import os
 
-file_path = "pozorovani.csv"
+# Zajištění individuálního souboru CSV pro každého uživatele
+if "file_path" not in st.session_state:
+    st.session_state["file_path"] = "pozorovani.csv"
 
-if not os.path.exists(file_path):
-    st.error("Soubor s daty nebyl nalezen. Nahrajte soubor CSV.")
-    uploaded_file = st.file_uploader("Nahrajte soubor CSV", type="csv")
-    if uploaded_file is not None:
-        file_path = uploaded_file
+uploaded_file = st.file_uploader("Nahrajte soubor CSV", type=["csv"])
+if uploaded_file is not None:
+    st.session_state["file_path"] = uploaded_file
+file_path = st.session_state["file_path"]
+
 
 # Načtení dat
 @st.cache_data

@@ -48,7 +48,9 @@ def load_data(file):
     df["Počet"] = df["Počet"].astype(int)  # Převod na celá čísla
     return df
 
-df = load_data(file_path)
+df = None
+if uploaded_file is not None or os.path.exists("pozorovani.csv"):
+    df = load_data(file_path)
 
 # Přidání filtrů na druh a datum
 species_column = "SpeciesName"  # Název sloupce s druhy ptáků

@@ -15,9 +15,9 @@ if "file_path" not in st.session_state:
 uploaded_file = st.file_uploader("Nahrajte soubor CSV", type=["csv"])
 
 if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file, delimiter=";", encoding="utf-8-sig")
+    file_path = uploaded_file
 else:
-    df = pd.read_csv("pozorovani.csv", delimiter=";", encoding="utf-8-sig")  # Výchozí CSV
+    file_path = "pozorovani.csv"
 
 
 
@@ -48,10 +48,7 @@ def load_data(file):
     df["Počet"] = df["Počet"].astype(int)  # Převod na celá čísla
     return df
 
-if uploaded_file is not None:
-    df = load_data(uploaded_file)
-else:
-    df = load_data("pozorovani.csv")
+df = load_data(file_path)
 
 # Přidání filtrů na druh a datum
 species_column = "SpeciesName"  # Název sloupce s druhy ptáků

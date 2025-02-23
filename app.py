@@ -127,7 +127,7 @@ m = folium.Map(location=map_center, zoom_start=6)
 month_labels = {1: "Leden", 2: "Únor", 3: "Březen", 4: "Duben", 5: "Květen", 6: "Červen", 7: "Červenec", 8: "Srpen", 9: "Září", 10: "Říjen", 11: "Listopad", 12: "Prosinec"}
 all_months = pd.DataFrame({"Měsíc": list(month_labels.values())})
 if not filtered_data.empty:
-    for _, row in filtered_data.iterrows():
+    for _, row in filtered_data.dropna(subset=["Zeměpisná šířka", "Zeměpisná délka"]).iterrows():
         folium.Marker(
             location=[row["Zeměpisná šířka"], row["Zeměpisná délka"]],
             popup=f"{row['Místo pozorování']} ({row['Počet']} jedinců)",

@@ -123,6 +123,7 @@ st.write("#### Jmenovitý seznam 10 nejčastějších druhů")
 st.write(top_species.to_html(index=False, escape=False), unsafe_allow_html=True)
 
 st.write("### Slepá mapa České republiky podle krajů")
+df.rename(columns={"Region": "region"}, inplace=True)
 if "region" in df.columns:
     region_counts = df["region"].value_counts().reset_index()
     region_counts.columns = ["Kraj", "Počet pozorování"]

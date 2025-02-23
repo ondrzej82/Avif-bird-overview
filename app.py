@@ -123,16 +123,17 @@ st.write("#### Jmenovitý seznam 10 nejčastějších druhů")
 st.write(top_species.to_html(index=False, escape=False), unsafe_allow_html=True)
 
 st.write("### Slepá mapa České republiky podle krajů")
-region_counts = df["region"].value_counts().reset_index()
-region_counts.columns = ["Kraj", "Počet pozorování"]
-
-# Načtení GeoJSON souboru pro kraje ČR
-geojson_url = "https://raw.githubusercontent.com/javichurricabeza/geojson-czech-regions/master/regions.geojson"
-fig_map = px.choropleth(region_counts, geojson=geojson_url, locations="Kraj", featureidkey="properties.name",
-                        color="Počet pozorování", color_continuous_scale="Blues",
-                        title="Počet pozorování v jednotlivých krajích")
-fig_map.update_geos(fitbounds="locations", visible=False)
-st.plotly_chart(fig_map)
+if "region" in df.columns:
+    region_counts = df["region"].value_counts().reset_index()
+    region_counts.columns = ["Kraj", "Počet pozorování"]
+    geojson_url = "https://raw.githubusercontent.com/javichurricabeza/geojson-czech-regions/master/regions.geojson"
+    fig_map = px.choropleth(region_counts, geojson=geojson_url, locations="Kraj", featureidkey="properties.name",
+                            color="Počet pozorování", color_continuous_scale="Blues",
+                            title="Počet pozorování v jednotlivých krajích")
+    fig_map.update_geos(fitbounds="locations", visible=False)
+    st.plotly_chart(fig_map)
+else:
+    st.error("Sloupec 'region' nebyl nalezen v souboru. Zkontrolujte data.")
 
 st.write("### Mapa pozorování")
 if not filtered_data.empty and filtered_data[['Zeměpisná šířka', 'Zeměpisná délka']].notna().all().all():

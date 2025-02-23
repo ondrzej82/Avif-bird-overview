@@ -123,7 +123,7 @@ st.write("### Mapa pozorování")
 if not filtered_data.empty and filtered_data[['Zeměpisná šířka', 'Zeměpisná délka']].notna().all().all():
     map_center = [filtered_data["Zeměpisná šířka"].mean(), filtered_data["Zeměpisná délka"].mean()]
 else:
-    map_center = [0, 0]  # Výchozí souřadnice, pokud nejsou dostupná data
+    map_center = [49.8175, 15.4730]  # Výchozí souřadnice pro Českou republiku  # Výchozí souřadnice, pokud nejsou dostupná data
 m = folium.Map(location=map_center, zoom_start=6)
 
 month_labels = {1: "Leden", 2: "Únor", 3: "Březen", 4: "Duben", 5: "Květen", 6: "Červen", 7: "Červenec", 8: "Srpen", 9: "Září", 10: "Říjen", 11: "Listopad", 12: "Prosinec"}

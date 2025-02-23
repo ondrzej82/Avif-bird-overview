@@ -57,8 +57,8 @@ species_column = "SpeciesName"  # Název sloupce s druhy ptáků
 species_list = ["Vyber"] + ["Vše"] + (sorted(df[species_column].unique()) if df is not None else [])
 selected_species = st.selectbox("Vyber druh ptáka:", species_list)
 
-date_min = df["Datum"].min().date()
-date_max = df["Datum"].max().date()
+date_min = df["Datum"].min().date() if df is not None and not df.empty else datetime.today().date()
+date_max = df["Datum"].max().date() if df is not None and not df.empty else datetime.today().date()
 
 # Výběr roku nebo konkrétního rozsahu datumů
 years = sorted(df["Datum"].dropna().dt.year.unique())

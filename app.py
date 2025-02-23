@@ -122,8 +122,7 @@ if st.checkbox("Zobrazit koláčový graf nejčastějších druhů", value=True)
 st.write("#### Jmenovitý seznam 10 nejčastějších druhů")
 st.write(top_species.to_html(index=False, escape=False), unsafe_allow_html=True)
 
-else:
-    st.error("Sloupec 'region' nebyl nalezen v souboru. Zkontrolujte data.")
+
 
 st.write("### Mapa pozorování")
 if not filtered_data.empty and filtered_data[['Zeměpisná šířka', 'Zeměpisná délka']].notna().all().all():

@@ -58,7 +58,9 @@ if uploaded_file is not None or os.path.exists("pozorovani.csv"):
 
 # Přidání filtrů na druh a datum
 species_column = "SpeciesName"  # Název sloupce s druhy ptáků
-species_list = ["Vyber"] + ["Vše"]
+species_list = ["Vyber", "Vše"]
+if df is not None and not df.empty and species_column in df.columns:
+    species_list += sorted(df[species_column].dropna().unique())
 if df is not None and not df.empty and species_column in df.columns:
     species_list += sorted(df[species_column].unique())
 selected_species = st.selectbox("Vyber druh ptáka:", species_list)

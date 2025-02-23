@@ -23,8 +23,8 @@ else:
 
 # Načtení dat
 @st.cache_data
-def load_data():
-    df = pd.read_csv(file_path, delimiter=';', encoding='utf-8-sig')
+def load_data(file):
+    df = pd.read_csv(file, delimiter=';', encoding='utf-8-sig')
     df.rename(columns={
         "Date": "Datum",
         "SiteName": "Místo pozorování",
@@ -41,7 +41,10 @@ def load_data():
     df["Počet"] = df["Počet"].astype(int)  # Převod na celá čísla
     return df
 
-df = load_data()
+if uploaded_file is not None:
+    df = load_data(uploaded_file)
+else:
+    df = load_data("pozorovani.csv")
 
 # Přidání filtrů na druh a datum
 species_column = "SpeciesName"  # Název sloupce s druhy ptáků

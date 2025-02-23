@@ -89,7 +89,8 @@ else:
     yearly_counts = pd.DataFrame(columns=["Datum", "Počet druhů"])
 yearly_counts.rename(columns={"Datum": "Rok", species_column: "Počet druhů"}, inplace=True)
 fig_yearly = px.bar(yearly_counts, x="Rok", y="Počet druhů", title="Celkový počet pozorovaných druhů podle roku", color_discrete_sequence=["green"])
-st.plotly_chart(fig_yearly)
+if st.checkbox("Zobrazit graf počtu pozorovaných druhů v jednotlivých letech", value=True):
+    st.plotly_chart(fig_yearly)
 
 # Filtr na druh ptáka
 if selected_species == "Vyber":
@@ -108,6 +109,7 @@ if selected_species not in ["Vyber", "Vše"]:
     yearly_species_counts["Počet pozorování"] = yearly_species_counts["Počet pozorování"].astype(int)
     fig_species_yearly = px.bar(yearly_species_counts, x="Rok", y="Počet pozorování", title=f"Počet pozorování druhu {selected_species} podle roku", color_discrete_sequence=["purple"])
     fig_species_yearly.update_yaxes(dtick=max(1, yearly_species_counts["Počet pozorování"].max() // 5))
+    if st.checkbox("Zobrazit graf počtu pozorování vybraného druhu v jednotlivých letech", value=True):
     st.plotly_chart(fig_species_yearly)
 
 st.write("### 10 nejčastěji pozorovaných druhů")
@@ -115,7 +117,8 @@ filtered_pie_data = df[(df["Datum"].dt.date >= date_from) & (df["Datum"].dt.date
 top_species = filtered_pie_data[species_column].value_counts().nlargest(10).reset_index()
 top_species.columns = ["Druh", "Počet pozorování"]
 fig_pie = px.pie(top_species, names="Druh", values="Počet pozorování", title="Podíl 10 nejčastějších druhů", hole=0.3)
-st.plotly_chart(fig_pie)
+if st.checkbox("Zobrazit koláčový graf nejčastějších druhů", value=True):
+    st.plotly_chart(fig_pie)
 st.write("#### Jmenovitý seznam 10 nejčastějších druhů")
 st.write(top_species.to_html(index=False, escape=False), unsafe_allow_html=True)
 
@@ -149,9 +152,11 @@ if not filtered_data.empty:
     monthly_counts.rename(columns={"Datum": "Počet pozorování", "Počet": "Počet jedinců"}, inplace=True)
     fig1 = px.bar(monthly_counts, x="Měsíc", y="Počet pozorování", title="Počet pozorování podle měsíců", color_discrete_sequence=["blue"])
     fig1.update_yaxes(dtick=max(1, monthly_counts["Počet pozorování"].max() // 5))
+    if st.checkbox("Zobrazit graf počtu pozorování podle měsíců", value=True):
     st.plotly_chart(fig1)
     fig2 = px.bar(monthly_counts, x="Měsíc", y="Počet jedinců", title="Počet jedinců podle měsíců", color_discrete_sequence=["red"])
     fig2.update_yaxes(dtick=max(1, monthly_counts["Počet jedinců"].max() // 5))
+    if st.checkbox("Zobrazit graf počtu jedinců podle měsíců", value=True):
     st.plotly_chart(fig2)
 
 # Zobrazení filtrované tabulky

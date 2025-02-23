@@ -73,7 +73,10 @@ else:
 
 # Přidání grafu s celkovým počtem pozorovaných druhů v každém roce
 st.write("### Počet pozorovaných druhů v jednotlivých letech")
-yearly_counts = df.groupby(df["Datum"].dt.year)[species_column].nunique().reset_index()
+if df is not None and not df.empty:
+    yearly_counts = df.groupby(df["Datum"].dt.year)[species_column].nunique().reset_index()
+else:
+    yearly_counts = pd.DataFrame(columns=["Datum", "Počet druhů"])
 yearly_counts.rename(columns={"Datum": "Rok", species_column: "Počet druhů"}, inplace=True)
 fig_yearly = px.bar(yearly_counts, x="Rok", y="Počet druhů", title="Celkový počet pozorovaných druhů podle roku", color_discrete_sequence=["green"])
 st.plotly_chart(fig_yearly)

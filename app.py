@@ -64,7 +64,8 @@ if df is not None and not df.empty and species_column in df.columns:
 if df is not None and not df.empty and species_column in df.columns:
     species_list += sorted(df[species_column].dropna().unique())
 if df is not None and not df.empty and species_column in df.columns:
-    species_list += sorted(df[species_column].unique())
+    if df is not None and not df.empty and species_column in df.columns:
+    species_list.extend(sorted(df[species_column].dropna().unique()))
 selected_species = st.selectbox("Vyber druh ptáka:", species_list)
 
 date_min = df["Datum"].min().date() if df is not None and not df.empty else datetime.today().date()

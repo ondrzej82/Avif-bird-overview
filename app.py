@@ -13,9 +13,12 @@ if "file_path" not in st.session_state:
     st.session_state["file_path"] = "pozorovani.csv"
 
 uploaded_file = st.file_uploader("Nahrajte soubor CSV", type=["csv"])
+
 if uploaded_file is not None:
-    st.session_state["file_path"] = uploaded_file
-file_path = st.session_state["file_path"]
+    df = pd.read_csv(uploaded_file, delimiter=";", encoding="utf-8-sig")
+else:
+    df = pd.read_csv("pozorovani.csv", delimiter=";", encoding="utf-8-sig")  # Výchozí CSV
+
 
 
 # Načtení dat

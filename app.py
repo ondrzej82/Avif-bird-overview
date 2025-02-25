@@ -174,12 +174,12 @@ m = folium.Map(location=map_center, zoom_start=6)
 
 if not filtered_data.empty:
     from folium.plugins import MarkerCluster
-    marker_cluster = MarkerCluster().add_to(m)
+    marker_cluster = MarkerCluster().add_to(marker_cluster)
     for _, row in filtered_data.dropna(subset=["Zeměpisná šířka", "Zeměpisná délka"]).iterrows():
         folium.Marker(
             location=[row["Zeměpisná šířka"], row["Zeměpisná délka"]],
             popup=f"{row['Místo pozorování']} ({row['Počet']} jedinců)",
-        ).add_to(marker_cluster)
+        ).add_to(m)
 
 if show_map_markers:
     st.write("### Mapa pozorování")

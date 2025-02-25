@@ -132,24 +132,11 @@ if activity_column in filtered_data.columns:
 # ------------------
 # GRAF 1: Počet pozorovaných druhů v jednotlivých letech
 # ------------------
-# 1) Definice všech let od min do max a navíc 2024
-min_year = int(df["Datum"].dt.year.min())
-max_year = int(df["Datum"].dt.year.max())
-all_years = list(range(min_year, max_year + 1))
-
-if 2024 not in all_years:
-    all_years.append(2024)
-all_years_df = pd.DataFrame({"Rok": sorted(all_years)})
-
-# Původní logika:
 if df is not None and not df.empty:
-    yearly_counts = df.groupby(df["Datum"].dt.year)[species_column].nunique().nunique().reset_index()
+    yearly_counts = df.groupby(df["Datum"].dt.year)[species_column].nunique().reset_index()
 else:
     yearly_counts = pd.DataFrame(columns=["Datum", "Počet druhů"])
 yearly_counts.rename(columns={"Datum": "Rok", species_column: "Počet druhů"}, inplace=True)
-
-# Merge s all_years_df, abychom měli i roky, kde je 0
-yearly_counts = all_years_df.merge(yearly_counts, on="Rok", how="left").fillna(0)
 fig_yearly = px.bar(yearly_counts, x="Rok", y="Počet druhů", title="Celkový počet pozorovaných druhů podle roku", color_discrete_sequence=["green"])
 fig_yearly.update_xaxes(type='category')
 
@@ -160,21 +147,12 @@ if show_bar_yearly:
 # ------------------
 # GRAF 2: Počet pozorování vybraného druhu v jednotlivých letech
 # ------------------
-# 2) Definice všech let od min do max a navíc 2024 pro DRUH
-min_year_spp = int(df["Datum"].dt.year.min())
-max_year_spp = int(df["Datum"].dt.year.max())
-all_years_spp = list(range(min_year_spp, max_year_spp + 1))
-
-if 2024 not in all_years_spp:
-    all_years_spp.append(2024)
-all_spp_df = pd.DataFrame({"Rok": sorted(all_years_spp)})
-
-years_df = all_spp_df
+years_df = pd.DataFrame({"Rok": years})
 if selected_species not in ["Vyber", "Vše"]:
     yearly_species_counts = df[df[species_column] == selected_species].groupby(df["Datum"].dt.year).size().reset_index(name="Počet pozorování")
     yearly_species_counts = years_df.merge(yearly_species_counts, left_on="Rok", right_on="Datum", how="left").fillna(0)
-yearly_species_counts["Počet pozorování"] = yearly_species_counts["Počet pozorování"].astype(int)
-fig_species_yearly = px.bar(yearly_species_counts, x="Rok", y="Počet pozorování", title=f"Počet pozorování druhu {selected_species} podle roku", color_discrete_sequence=["purple"])
+    yearly_species_counts["Počet pozorování"] = yearly_species_counts["Počet pozorování"].astype(int)
+    fig_species_yearly = px.bar(yearly_species_counts, x="Rok", y="Počet pozorování", title=f"Počet pozorování druhu {selected_species} podle roku", color_discrete_sequence=["purple"])
     fig_species_yearly.update_xaxes(type='category')
     fig_species_yearly.update_yaxes(dtick=max(1, yearly_species_counts["Počet pozorování"].max() // 5))
     if show_bar_species_yearly:

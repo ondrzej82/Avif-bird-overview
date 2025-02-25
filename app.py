@@ -55,17 +55,20 @@ if uploaded_file is not None or os.path.exists("pozorovani.csv"):
     df = load_data(file_path)
 
 # ------------------
-# Checkboxy pro zobrazení / skrytí grafů (nahoře na stránce)
+# Checkboxy pro zobrazení / skrytí grafů a map (nahoře na stránce)
 # ------------------
-show_bar_yearly = st.checkbox("Zobrazit graf: Počet pozorovaných druhů v jednotlivých letech", value=True)
-show_bar_species_yearly = st.checkbox("Zobrazit graf: Počet pozorování vybraného druhu v jednotlivých letech", value=True)
-show_pie_top_species = st.checkbox("Zobrazit koláčový graf nejčastějších druhů", value=True)
-show_bar_monthly_obs = st.checkbox("Zobrazit graf počtu pozorování podle měsíců", value=True)
-show_bar_monthly_count = st.checkbox("Zobrazit graf počtu jedinců podle měsíců", value=True)
-
-# Checkboxy pro mapy
-show_map_markers = st.checkbox("Zobrazit mapu s body pozorování", value=True)
-show_map_heat = st.checkbox("Zobrazit heatmapu pozorování", value=True)
+with st.expander("Zobrazení grafů a map"):
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        show_bar_yearly = st.checkbox("Graf: Počet druhů v jednotlivých letech", value=True)
+        show_bar_species_yearly = st.checkbox("Graf: Počet pozorování vybraného druhu", value=True)
+    with c2:
+        show_pie_top_species = st.checkbox("Koláč: Nejčastější druhy", value=True)
+        show_bar_monthly_obs = st.checkbox("Graf: Počty pozorování podle měsíců", value=True)
+    with c3:
+        show_bar_monthly_count = st.checkbox("Graf: Počty jedinců podle měsíců", value=True)
+        show_map_markers = st.checkbox("Mapa s body pozorování", value=True)
+        show_map_heat = st.checkbox("Heatmapa pozorování", value=True)
 
 # ------------------
 # Filtry: Druh + Datum + Aktivita

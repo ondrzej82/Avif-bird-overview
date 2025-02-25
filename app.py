@@ -136,8 +136,6 @@ fig_pie = px.pie(top_species, names="Druh", values="Počet pozorování", title=
 if show_pie_top_species:
     st.write("### 10 nejčastěji pozorovaných druhů")
     st.plotly_chart(fig_pie)
-    st.write("#### Jmenovitý seznam 10 nejčastějších druhů")
-    st.write(top_species.to_html(index=False, escape=False), unsafe_allow_html=True)
 
 # ------------------
 # MAPA S BODY

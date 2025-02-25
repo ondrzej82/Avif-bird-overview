@@ -110,6 +110,7 @@ else:
     yearly_counts = pd.DataFrame(columns=["Datum", "Počet druhů"])
 yearly_counts.rename(columns={"Datum": "Rok", species_column: "Počet druhů"}, inplace=True)
 fig_yearly = px.bar(yearly_counts, x="Rok", y="Počet druhů", title="Celkový počet pozorovaných druhů podle roku", color_discrete_sequence=["green"])
+fig_yearly.update_xaxes(type='category')
 
 if show_bar_yearly:
     st.write("### Počet pozorovaných druhů v jednotlivých letech")
@@ -124,6 +125,7 @@ if selected_species not in ["Vyber", "Vše"]:
     yearly_species_counts = years_df.merge(yearly_species_counts, left_on="Rok", right_on="Datum", how="left").fillna(0)
     yearly_species_counts["Počet pozorování"] = yearly_species_counts["Počet pozorování"].astype(int)
     fig_species_yearly = px.bar(yearly_species_counts, x="Rok", y="Počet pozorování", title=f"Počet pozorování druhu {selected_species} podle roku", color_discrete_sequence=["purple"])
+fig_species_yearly.update_xaxes(type='category')
     fig_species_yearly.update_yaxes(dtick=max(1, yearly_species_counts["Počet pozorování"].max() // 5))
     if show_bar_species_yearly:
         st.write(f"### Počet pozorování druhu {selected_species} v jednotlivých letech")

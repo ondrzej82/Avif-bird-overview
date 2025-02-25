@@ -126,10 +126,10 @@ if selected_species not in ["Vyber", "Vše"]:
     yearly_species_counts["Počet pozorování"] = yearly_species_counts["Počet pozorování"].astype(int)
     fig_species_yearly = px.bar(yearly_species_counts, x="Rok", y="Počet pozorování", title=f"Počet pozorování druhu {selected_species} podle roku", color_discrete_sequence=["purple"])
 fig_species_yearly.update_xaxes(type='category')
-    fig_species_yearly.update_yaxes(dtick=max(1, yearly_species_counts["Počet pozorování"].max() // 5))
-    if show_bar_species_yearly:
-        st.write(f"### Počet pozorování druhu {selected_species} v jednotlivých letech")
-        st.plotly_chart(fig_species_yearly)
+fig_species_yearly.update_yaxes(dtick=max(1, yearly_species_counts["Počet pozorování"].max() // 5))
+if show_bar_species_yearly:
+    st.write(f"### Počet pozorování druhu {selected_species} v jednotlivých letech")
+    st.plotly_chart(fig_species_yearly)
 
 # ------------------
 # GRAF 3: 10 nejčastěji pozorovaných druhů (koláč)

@@ -130,14 +130,13 @@ if selected_species not in ["Vyber", "Vše"]:
 # ------------------
 filtered_pie_data = df[(df["Datum"].dt.date >= date_from) & (df["Datum"].dt.date <= date_to)]
 top_species = filtered_pie_data[species_column].value_counts().nlargest(10).reset_index()
-top_species.columns = ["Druh", "Počet pozorování"]
+$1top_species["Druh"] = top_species.apply(lambda row: f"{row['Druh']} (" + str(row['Počet pozorování']) + ")", axis=1)
 fig_pie = px.pie(top_species, names="Druh", values="Počet pozorování", title="Podíl 10 nejčastějších druhů", hole=0.3)
 
 if show_pie_top_species:
     st.write("### 10 nejčastěji pozorovaných druhů")
     st.plotly_chart(fig_pie)
-    st.write("#### Jmenovitý seznam 10 nejčastějších druhů")
-    st.write(top_species.to_html(index=False, escape=False), unsafe_allow_html=True)
+    
 
 # ------------------
 # MAPA S BODY

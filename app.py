@@ -143,6 +143,20 @@ if not filtered_data.empty:
 
 folium_static(m)
 
+# =============== MOVE HEATMAP HERE ===============
+st.write("### Heatmapa pozorování")
+heat_map = folium.Map(location=map_center, zoom_start=6)
+if not filtered_data.empty:
+    # Odstraníme řádky s chybějícími souřadnicemi nebo počty
+    heat_df = filtered_data.dropna(subset=["Zeměpisná šířka", "Zeměpisná délka", "Počet"])
+    # Seskupíme podle souřadnic, abychom sečetli počet jedinců
+    heat_agg = heat_df.groupby(["Zeměpisná šířka", "Zeměpisná délka"])['Počet'].sum().reset_index()
+    # Převedeme DataFrame na list tuple (lat, lng, count)
+    heat_data = heat_agg.values.tolist()
+    # Vykreslení heatmapy
+    HeatMap(heat_data, radius=10).add_to(heat_map)
+folium_static(heat_map)
+
 # Přidání sloupcového grafu podle měsíců
 month_labels = {1: "Leden", 2: "Únor", 3: "Březen", 4: "Duben", 5: "Květen", 6: "Červen", 7: "Červenec", 8: "Srpen", 9: "Září", 10: "Říjen", 11: "Listopad", 12: "Prosinec"}
 if not filtered_data.empty:
@@ -168,18 +182,3 @@ filtered_data_display = filtered_data.copy()
 filtered_data_display["Počet"] = filtered_data_display["Počet"].apply(lambda x: 'x' if pd.isna(x) or x == '' else int(x))
 filtered_data_display["Datum"] = filtered_data_display["Datum"].apply(lambda x: x.strftime('%d. %m. %Y') if pd.notna(x) else '')
 st.write(filtered_data_display[["Datum", "Místo pozorování", "Počet", "Odkaz"]].to_html(escape=False), unsafe_allow_html=True)
-
-# =============== HEATMAP ADDED ===============
-st.write("### Heatmapa pozorování")
-heat_map = folium.Map(location=map_center, zoom_start=6)
-if not filtered_data.empty:
-    # Odstraníme řádky s chybějícími souřadnicemi nebo počty
-    heat_df = filtered_data.dropna(subset=["Zeměpisná šířka", "Zeměpisná délka", "Počet"])
-    # Seskupíme podle souřadnic, abychom sečetli počet jedinců
-    heat_agg = heat_df.groupby(["Zeměpisná šířka", "Zeměpisná délka"])['Počet'].sum().reset_index()
-    # Převedeme DataFrame na list tuple (lat, lng, count)
-    heat_data = heat_agg.values.tolist()
-    # Vykreslení heatmapy
-    HeatMap(heat_data, radius=10).add_to(heat_map)
-
-folium_static(heat_map)

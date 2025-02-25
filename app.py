@@ -20,7 +20,6 @@ if uploaded_file is not None:
 else:
     file_path = "pozorovani.csv"
 
-
 @st.cache_data
 def load_data(file):
     try:
@@ -68,21 +67,23 @@ show_bar_monthly_count = st.checkbox("Zobrazit graf počtu jedinců podle měsí
 show_map_markers = st.checkbox("Zobrazit mapu s body pozorování", value=True)
 show_map_heat = st.checkbox("Zobrazit heatmapu pozorování", value=True)
 
-# Přidání filtrů na druh a datum
-species_column = "SpeciesName"
+# ------------------
+# Filtry: Druh + Datum + Aktivita
+# ------------------
+
+species_column = "SpeciesName"  # Sloupec s názvem druhu
+activity_column = "Activity"     # Sloupec s aktivitou
+
+# 1) Filtr druhu
 species_list = ["Vyber", "Vše"]
-if df is not None and not df.empty and species_column in df.columns:
-    species_list += sorted(set(df[species_column].dropna().unique()))
-if df is not None and not df.empty and species_column in df.columns:
-    species_list = ["Vyber", "Vše"] + sorted(df[species_column].dropna().unique())
 if df is not None and not df.empty and species_column in df.columns:
     species_list = ["Vyber", "Vše"] + sorted(set(df[species_column].dropna().unique()))
 selected_species = st.selectbox("Vyber druh ptáka:", species_list)
 
+# 2) Filtr data
 date_min = df["Datum"].min().date() if df is not None and not df.empty else datetime.today().date()
 date_max = df["Datum"].max().date() if df is not None and not df.empty else datetime.today().date()
 
-# Výběr roku nebo konkrétního rozsahu datumů
 years = sorted(df["Datum"].dropna().dt.year.unique()) if df is not None and not df.empty else []
 selected_year = st.selectbox("Vyberte rok:", ["Vlastní rozsah"] + years)
 
@@ -93,13 +94,33 @@ else:
     date_from = datetime(selected_year, 1, 1).date()
     date_to = datetime(selected_year, 12, 31).date()
 
-# Filtr na druh ptáka
+# 3) Filtr aktivity
+activity_list = ["Vyber", "Vše"]
+if df is not None and not df.empty and activity_column in df.columns:
+    unique_activities = sorted(set(df[activity_column].dropna().unique()))
+    activity_list += unique_activities
+selected_activity = st.selectbox("Vyber aktivitu:", activity_list)
+
+# ------------------
+# Filtrování dat
+# ------------------
+
+# Napřed vyfiltrujeme podle data
+filtered_data = df[(df["Datum"].dt.date >= date_from) & (df["Datum"].dt.date <= date_to)]
+
+# Pak podle druhu
 if selected_species == "Vyber":
-    filtered_data = pd.DataFrame(columns=df.columns)
-elif selected_species == "Vše":
-    filtered_data = df[(df["Datum"].dt.date >= date_from) & (df["Datum"].dt.date <= date_to)]
-else:
-    filtered_data = df[(df[species_column] == selected_species) & (df["Datum"].dt.date >= date_from) & (df["Datum"].dt.date <= date_to)]
+    # prázdná tabulka
+    filtered_data = filtered_data.iloc[0:0]
+elif selected_species != "Vše":
+    filtered_data = filtered_data[filtered_data[species_column] == selected_species]
+
+# A nakonec podle aktivity
+if activity_column in filtered_data.columns:
+    if selected_activity == "Vyber":
+        filtered_data = filtered_data.iloc[0:0]
+    elif selected_activity != "Vše":
+        filtered_data = filtered_data[filtered_data[activity_column] == selected_activity]
 
 # ------------------
 # GRAF 1: Počet pozorovaných druhů v jednotlivých letech
@@ -125,11 +146,11 @@ if selected_species not in ["Vyber", "Vše"]:
     yearly_species_counts = years_df.merge(yearly_species_counts, left_on="Rok", right_on="Datum", how="left").fillna(0)
     yearly_species_counts["Počet pozorování"] = yearly_species_counts["Počet pozorování"].astype(int)
     fig_species_yearly = px.bar(yearly_species_counts, x="Rok", y="Počet pozorování", title=f"Počet pozorování druhu {selected_species} podle roku", color_discrete_sequence=["purple"])
-fig_species_yearly.update_xaxes(type='category')
-fig_species_yearly.update_yaxes(dtick=max(1, yearly_species_counts["Počet pozorování"].max() // 5))
-if show_bar_species_yearly:
-    st.write(f"### Počet pozorování druhu {selected_species} v jednotlivých letech")
-    st.plotly_chart(fig_species_yearly)
+    fig_species_yearly.update_xaxes(type='category')
+    fig_species_yearly.update_yaxes(dtick=max(1, yearly_species_counts["Počet pozorování"].max() // 5))
+    if show_bar_species_yearly:
+        st.write(f"### Počet pozorování druhu {selected_species} v jednotlivých letech")
+        st.plotly_chart(fig_species_yearly)
 
 # ------------------
 # GRAF 3: 10 nejčastěji pozorovaných druhů (koláč)

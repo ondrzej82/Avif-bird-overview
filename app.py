@@ -173,6 +173,8 @@ else:
 m = folium.Map(location=map_center, zoom_start=6)
 
 if not filtered_data.empty:
+    from folium.plugins import MarkerCluster
+    marker_cluster = MarkerCluster().add_to(m)
     for _, row in filtered_data.dropna(subset=["Zeměpisná šířka", "Zeměpisná délka"]).iterrows():
         folium.Marker(
             location=[row["Zeměpisná šířka"], row["Zeměpisná délka"]],

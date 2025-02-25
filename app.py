@@ -95,11 +95,11 @@ else:
     date_to = datetime(selected_year, 12, 31).date()
 
 # 3) Filtr aktivity
-activity_list = ["Vyber", "Vše"]
+activity_list = ["Vše"]
 if df is not None and not df.empty and activity_column in df.columns:
     unique_activities = sorted(set(df[activity_column].dropna().unique()))
     activity_list += unique_activities
-selected_activity = st.selectbox("Vyber aktivitu:", activity_list)
+selected_activity = st.selectbox("Vyber aktivitu (výchozí = Vše):", activity_list)
 
 # ------------------
 # Filtrování dat
@@ -117,9 +117,7 @@ elif selected_species != "Vše":
 
 # A nakonec podle aktivity
 if activity_column in filtered_data.columns:
-    if selected_activity == "Vyber":
-        filtered_data = filtered_data.iloc[0:0]
-    elif selected_activity != "Vše":
+    if selected_activity != "Vše":
         filtered_data = filtered_data[filtered_data[activity_column] == selected_activity]
 
 # ------------------

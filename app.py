@@ -9,6 +9,12 @@ from datetime import datetime
 # Cesta k souboru
 import os
 
+# -------------------------
+# Nastavení "wide" layoutu a titulku aplikace
+# -------------------------
+st.set_page_config(page_title="Avif statistika", layout="wide")
+
+                   
 # Zajištění individuálního souboru CSV pro každého uživatele
 if "file_path" not in st.session_state:
     st.session_state["file_path"] = "pozorovani.csv"

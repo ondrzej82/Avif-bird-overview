@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import folium
 from streamlit_folium import folium_static
+from folium.plugins import HeatMap
 from datetime import datetime
 
 # Cesta k souboru
@@ -53,7 +54,7 @@ if uploaded_file is None and not os.path.exists("pozorovani.csv"):
     st.warning("Prosím nahrajte soubor CSV, než aplikace začne pracovat.")
     st.stop()
 
-if uploaded_file is not None or os.path.exists("pozorovani.csv"): 
+if uploaded_file is not None or os.path.exists("pozorovani.csv"):
     df = load_data(file_path)
 
 # Přidání filtrů na druh a datum
@@ -122,8 +123,10 @@ if st.checkbox("Zobrazit koláčový graf nejčastějších druhů", value=True)
 st.write("#### Jmenovitý seznam 10 nejčastějších druhů")
 st.write(top_species.to_html(index=False, escape=False), unsafe_allow_html=True)
 
+
+
 st.write("### Mapa pozorování")
-if not filtered_data.empty and filtered_data[['Zeměpisná šířka', 'Zeměpisná délka']].notna().all().all():
+if not filtered_data.empty and filtered_data[["Zeměpisná šířka", "Zeměpisná délka"]].notna().all().all():
     map_center = [filtered_data["Zeměpisná šířka"].mean(), filtered_data["Zeměpisná délka"].mean()]
 else:
     map_center = [49.8175, 15.4730]  # Výchozí souřadnice pro Českou republiku  # Výchozí souřadnice, pokud nejsou dostupná data
@@ -165,3 +168,18 @@ filtered_data_display = filtered_data.copy()
 filtered_data_display["Počet"] = filtered_data_display["Počet"].apply(lambda x: 'x' if pd.isna(x) or x == '' else int(x))
 filtered_data_display["Datum"] = filtered_data_display["Datum"].apply(lambda x: x.strftime('%d. %m. %Y') if pd.notna(x) else '')
 st.write(filtered_data_display[["Datum", "Místo pozorování", "Počet", "Odkaz"]].to_html(escape=False), unsafe_allow_html=True)
+
+# =============== HEATMAP ADDED ===============
+st.write("### Heatmapa pozorování")
+heat_map = folium.Map(location=map_center, zoom_start=6)
+if not filtered_data.empty:
+    # Odstraníme řádky s chybějícími souřadnicemi nebo počty
+    heat_df = filtered_data.dropna(subset=["Zeměpisná šířka", "Zeměpisná délka", "Počet"])
+    # Seskupíme podle souřadnic, abychom sečetli počet jedinců
+    heat_agg = heat_df.groupby(["Zeměpisná šířka", "Zeměpisná délka"])['Počet'].sum().reset_index()
+    # Převedeme DataFrame na list tuple (lat, lng, count)
+    heat_data = heat_agg.values.tolist()
+    # Vykreslení heatmapy
+    HeatMap(heat_data, radius=10).add_to(heat_map)
+
+folium_static(heat_map)

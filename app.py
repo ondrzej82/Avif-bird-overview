@@ -132,10 +132,6 @@ if activity_column in filtered_data.columns:
 # ------------------
 # GRAF 1: Počet pozorovaných druhů v jednotlivých letech
 # ------------------
-min_year = int(df["Datum"].dt.year.min())
-max_year = int(df["Datum"].dt.year.max())
-all_years = list(range(min_year, max_year + 1))
-
 if df is not None and not df.empty:
     yearly_counts = df.groupby(df["Datum"].dt.year)[species_column].nunique().reset_index()
 else:

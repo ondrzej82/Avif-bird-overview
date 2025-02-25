@@ -179,7 +179,7 @@ if not filtered_data.empty:
         folium.Marker(
             location=[row["Zeměpisná šířka"], row["Zeměpisná délka"]],
             popup=f"{row['Místo pozorování']} ({row['Počet']} jedinců)",
-        ).add_to(m)
+        ).add_to(marker_cluster)
 
 if show_map_markers:
     st.write("### Mapa pozorování")

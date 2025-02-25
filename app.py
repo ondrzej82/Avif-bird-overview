@@ -64,6 +64,10 @@ show_pie_top_species = st.checkbox("Zobrazit koláčový graf nejčastějších 
 show_bar_monthly_obs = st.checkbox("Zobrazit graf počtu pozorování podle měsíců", value=True)
 show_bar_monthly_count = st.checkbox("Zobrazit graf počtu jedinců podle měsíců", value=True)
 
+# Checkboxy pro mapy
+show_map_markers = st.checkbox("Zobrazit mapu s body pozorování", value=True)
+show_map_heat = st.checkbox("Zobrazit heatmapu pozorování", value=True)
+
 # Přidání filtrů na druh a datum
 species_column = "SpeciesName"
 species_list = ["Vyber", "Vše"]
@@ -154,20 +158,23 @@ if not filtered_data.empty:
             popup=f"{row['Místo pozorování']} ({row['Počet']} jedinců)",
         ).add_to(m)
 
-st.write("### Mapa pozorování")
-folium_static(m)
+if show_map_markers:
+    st.write("### Mapa pozorování")
+    folium_static(m)
 
 # ------------------
 # HEATMAPA POZOROVÁNÍ
 # ------------------
-st.write("### Heatmapa pozorování")
 heat_map = folium.Map(location=map_center, zoom_start=6)
 if not filtered_data.empty:
     heat_df = filtered_data.dropna(subset=["Zeměpisná šířka", "Zeměpisná délka", "Počet"])
     heat_agg = heat_df.groupby(["Zeměpisná šířka", "Zeměpisná délka"])['Počet'].sum().reset_index()
     heat_data = heat_agg.values.tolist()
     HeatMap(heat_data, radius=10).add_to(heat_map)
-folium_static(heat_map)
+
+if show_map_heat:
+    st.write("### Heatmapa pozorování")
+    folium_static(heat_map)
 
 # ------------------
 # GRAFY PODLE MĚSÍCŮ

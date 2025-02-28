@@ -84,10 +84,10 @@ species_column = "SpeciesName"  # Sloupec s názvem druhu
 activity_column = "Activity"     # Sloupec s aktivitou
 
 # 1) Filtr druhu
-species_list = ["Vyber", "Vše"]
+species_list = ["Vyber"]
 if df is not None and not df.empty and species_column in df.columns:
-    species_list = ["Vyber", "Vše"] + sorted(set(df[species_column].dropna().unique()))
-selected_species = st.selectbox("Vyber druh ptáka:", species_list)
+    species_list = ["Vyber"] + sorted(set(df[species_column].dropna().unique()))
+selected_species = st.selectbox("Vyber druh:", species_list)
 
 # 2) Filtr data
 date_min = df["Datum"].min().date() if df is not None and not df.empty else datetime.today().date()
